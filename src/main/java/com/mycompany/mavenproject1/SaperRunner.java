@@ -19,7 +19,7 @@ public class SaperRunner {
                 new StandardFrame().setVisible(true);
             }
         });
-        System.out.println("Hello!");
+        
         System.out.println("Bombs = "+FieldBuilder.getBombCounter()+"; NoBombs = "+ FieldBuilder.notaBombCounter);
     }
 }
