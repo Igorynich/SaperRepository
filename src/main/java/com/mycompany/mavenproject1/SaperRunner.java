@@ -5,21 +5,26 @@
  */
 package com.mycompany.mavenproject1;
 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 /**
  *
  * @author User
  */
 public class SaperRunner {
-    public static void main (String[] args){
+
+    
+    
+    public static void main(String[] args) {
         FieldBuilder.getField();
-        
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new StandardFrame().setVisible(true);
-            }
-        });
+
+        java.awt.EventQueue.invokeLater(new SaperFieldThread());
         System.out.println("Hello!");
-        System.out.println("Bombs = "+FieldBuilder.getBombCounter()+"; NoBombs = "+ FieldBuilder.notaBombCounter);
+        System.out.println("Bombs = " + FieldBuilder.getBombCounter() + "; NoBombs = " + FieldBuilder.notaBombCounter);
     }
+    
 }
