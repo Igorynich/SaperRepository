@@ -6,7 +6,11 @@
 package com.mycompany.mavenproject1;
 
 import com.sun.glass.ui.Size;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -17,6 +21,8 @@ public class FieldBuilder {
 
     static StandardCell[][] field = new StandardCell[StandardBoard.size[0]][StandardBoard.size[1]];
     static StandardCell[][] shell = new StandardCell[StandardBoard.size[0]][StandardBoard.size[1]];
+    static ArrayList<StandardCell> fieldList = new ArrayList<StandardCell>();
+    static ArrayList<StandardCell> shellList = new ArrayList<StandardCell>();
     static Random random = new Random(/*new Date().getTime()*/);
     static int bombCounter = 0;
     static int notaBombCounter = 0;
@@ -29,17 +35,36 @@ public class FieldBuilder {
         return notaBombCounter;
     }
 
-    public static void getField(){
+    public static void getField() {
         createField();
         addNumbers();
         createShell();
+        toList(fieldList, field);
+        toList(shellList, shell);
+        //create collections?
     }
-    
-    public static void createShell() {
+
+    public static void printList(ArrayList<StandardCell> list) {
+        for (StandardCell cell : list){
+            System.out.println(list.indexOf(cell)+ "  " +cell);
+        }
+    }
+
+    private static ArrayList<StandardCell> toList(ArrayList<StandardCell> list, StandardCell[][] array) {
         for (int i = 0; i < StandardBoard.size[0]; i++) {
             for (int j = 0; j < StandardBoard.size[1]; j++) {
-                shell[i][j] = new StandardCell(0, 0, StandardCell.cellType.SHELL);
-                
+                list.add(array[i][j]);
+            }
+        }
+        return list;
+    }
+
+    public static void createShell() {
+        int k = 0;
+        for (int i = 0; i < StandardBoard.size[0]; i++) {
+            for (int j = 0; j < StandardBoard.size[1]; j++) {
+                shell[i][j] = new StandardCell(k * i, k * j, StandardCell.cellType.SHELL);
+
             }
         }
     }
