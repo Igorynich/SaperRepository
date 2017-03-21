@@ -20,7 +20,7 @@ public class SaperRunner {
     
     
     public static void main(String[] args) {
-        FieldBuilder.getField();
+        //FieldBuilder.getField();
 
         java.awt.EventQueue.invokeLater(new SaperFieldThread());
         System.out.println("Hello!");

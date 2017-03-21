@@ -10,30 +10,36 @@ package com.mycompany.mavenproject1;
  * @author User
  */
 public class StandardBoard {
-    
+
     static int[] size = {10, 10};
-    static int board = size[0]*size[1];
+    static int board = size[0] * size[1];
     static int difficulty = 25;
 
-   
     public static void setSize(int x, int y) {
-        StandardBoard.size[0] = x;
-        StandardBoard.size[1] = y;
+        if ((x == 0) && (y > 0)) {
+            StandardBoard.size[1] = y;
+        } else if ((x > 0) && (y == 0)) {
+            StandardBoard.size[0] = x;
+        } else if ((x > 0) && (y > 0)) {
+            StandardBoard.size[0] = x;
+            StandardBoard.size[1] = y;
+        }
     }
 
-    
     public static void setDifficulty(int p) {
         StandardBoard.difficulty = p;
     }
 
-    
     public static int[] getSize() {
         return StandardBoard.size;
     }
 
-    
     public static int getDifficulty() {
         return StandardBoard.difficulty;
     }
-    
+
+    public static int getBoard() {
+        return board;
+    }
+
 }

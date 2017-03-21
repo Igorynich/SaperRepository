@@ -42,7 +42,7 @@ public class StandardFrame extends JFrame {
     private void initComponents() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setBounds(0, 0, 300, 300);                                             //use Board getSize()
-        this.setTitle("SAPER");
+        //this.setTitle("SAPER");
         
         //overlayLayout.addLayoutComponent("Starting Panle", getStartingPage());
         //this.add(getStartingPage());

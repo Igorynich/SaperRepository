@@ -90,7 +90,7 @@ public class StandardCell extends JComponent implements Cell {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(cellSize[0], cellSize[1]); //To change body of generated methods, choose Tools | Templates.
+        return new Dimension(cellSize[0]+1, cellSize[1]+1); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

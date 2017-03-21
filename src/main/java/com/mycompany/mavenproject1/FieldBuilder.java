@@ -5,12 +5,7 @@
  */
 package com.mycompany.mavenproject1;
 
-import com.sun.glass.ui.Size;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -19,8 +14,8 @@ import java.util.Random;
  */
 public class FieldBuilder {
 
-    static StandardCell[][] field = new StandardCell[StandardBoard.size[0]][StandardBoard.size[1]];
-    static StandardCell[][] shell = new StandardCell[StandardBoard.size[0]][StandardBoard.size[1]];
+    static StandardCell[][] field = null;
+    static StandardCell[][] shell = null;
     static ArrayList<StandardCell> fieldList = new ArrayList<StandardCell>();
     static ArrayList<StandardCell> shellList = new ArrayList<StandardCell>();
     static Random random = new Random(/*new Date().getTime()*/);
@@ -36,6 +31,8 @@ public class FieldBuilder {
     }
 
     public static void getField() {
+        field = new StandardCell[StandardBoard.getSize()[0]][StandardBoard.getSize()[1]];
+        shell = new StandardCell[StandardBoard.getSize()[0]][StandardBoard.getSize()[1]];
         createField();
         addNumbers();
         createShell();
@@ -51,8 +48,8 @@ public class FieldBuilder {
     }
 
     private static ArrayList<StandardCell> toList(ArrayList<StandardCell> list, StandardCell[][] array) {
-        for (int i = 0; i < StandardBoard.size[0]; i++) {
-            for (int j = 0; j < StandardBoard.size[1]; j++) {
+        for (int i = 0; i < StandardBoard.getSize()[0]; i++) {
+            for (int j = 0; j < StandardBoard.getSize()[1]; j++) {
                 list.add(array[i][j]);
             }
         }
@@ -61,8 +58,8 @@ public class FieldBuilder {
 
     public static void createShell() {
         int k = 0;
-        for (int i = 0; i < StandardBoard.size[0]; i++) {
-            for (int j = 0; j < StandardBoard.size[1]; j++) {
+        for (int i = 0; i < StandardBoard.getSize()[0]; i++) {
+            for (int j = 0; j < StandardBoard.getSize()[1]; j++) {
                 shell[i][j] = new StandardCell(k * i, k * j, StandardCell.cellType.SHELL);
 
             }
@@ -70,13 +67,15 @@ public class FieldBuilder {
     }
 
     static public void createField() {
-        for (int i = 0; i < StandardBoard.size[0]; i++) {
-            for (int j = 0; j < StandardBoard.size[1]; j++) {
-                int ran = random.nextInt(StandardBoard.board);
-                if (ran < StandardBoard.difficulty) {
+        for (int i = 0; i < StandardBoard.getSize()[0]; i++) {
+            for (int j = 0; j < StandardBoard.getSize()[1]; j++) {
+                int ran = random.nextInt(StandardBoard.getBoard());
+                if (ran < StandardBoard.getDifficulty()) {
+                    //System.out.println("Bomb I and J "+i + " " +j+ " "+StandardBoard.getSize()[0]+" "+StandardBoard.getSize()[1]);
                     field[i][j] = new StandardCell(0, 0, StandardCell.cellType.BOMB);
                     bombCounter++;
                 } else {
+                    //System.out.println("Hidden I and J "+i + " " +j);
                     field[i][j] = new StandardCell(0, 0, StandardCell.cellType.HIDDEN);
                     notaBombCounter++;
                 }
@@ -86,8 +85,8 @@ public class FieldBuilder {
 
     public static void addNumbers() {
         int number = 0;
-        for (int i = 0; i < StandardBoard.size[0]; i++) {
-            for (int j = 0; j < StandardBoard.size[1]; j++) {
+        for (int i = 0; i < StandardBoard.getSize()[0]; i++) {
+            for (int j = 0; j < StandardBoard.getSize()[1]; j++) {
                 if ((i == 0) && (j == 0) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
                     if (field[i + 1][j].getCell() == StandardCell.cellType.BOMB) {
                         number++;
@@ -104,7 +103,7 @@ public class FieldBuilder {
                         field[i][j] = sc;
                         number = 0;
                     }
-                } else if ((i > 0) && (j == 0) && (i < StandardBoard.size[0] - 1) && (j < StandardBoard.size[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
+                } else if ((i > 0) && (j == 0) && (i < StandardBoard.getSize()[0] - 1) && (j < StandardBoard.getSize()[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
                     if (field[i + 1][j].getCell() == StandardCell.cellType.BOMB) {
                         number++;
                     }
@@ -126,7 +125,7 @@ public class FieldBuilder {
                         field[i][j] = sc;
                         number = 0;
                     }
-                } else if ((i == 0) && (j > 0) && (i < StandardBoard.size[0] - 1) && (j < StandardBoard.size[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
+                } else if ((i == 0) && (j > 0) && (i < StandardBoard.getSize()[0] - 1) && (j < StandardBoard.getSize()[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
                     if (field[i + 1][j].getCell() == StandardCell.cellType.BOMB) {
                         number++;
                     }
@@ -148,7 +147,7 @@ public class FieldBuilder {
                         field[i][j] = sc;
                         number = 0;
                     }
-                } else if (((i > 0) && (j > 0)) && (i < StandardBoard.size[0] - 1) && (j < StandardBoard.size[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
+                } else if (((i > 0) && (j > 0)) && (i < StandardBoard.getSize()[0] - 1) && (j < StandardBoard.getSize()[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
                     if (field[i][j + 1].getCell() == StandardCell.cellType.BOMB) {
                         number++;
                     }
@@ -179,7 +178,7 @@ public class FieldBuilder {
                         field[i][j] = sc;
                         number = 0;
                     }
-                } else if (((i > 0) && (j > 0)) && (i == StandardBoard.size[0] - 1) && (j < StandardBoard.size[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
+                } else if (((i > 0) && (j > 0)) && (i == StandardBoard.getSize()[0] - 1) && (j < StandardBoard.getSize()[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
                     if (field[i][j + 1].getCell() == StandardCell.cellType.BOMB) {
                         number++;
                     }
@@ -202,7 +201,7 @@ public class FieldBuilder {
                         number = 0;
                     }
 
-                } else if (((i > 0) && (j > 0)) && (i < StandardBoard.size[0] - 1) && (j == StandardBoard.size[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
+                } else if (((i > 0) && (j > 0)) && (i < StandardBoard.getSize()[0] - 1) && (j == StandardBoard.getSize()[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
                     if (field[i + 1][j].getCell() == StandardCell.cellType.BOMB) {
                         number++;
                     }
@@ -224,7 +223,7 @@ public class FieldBuilder {
                         field[i][j] = sc;
                         number = 0;
                     }
-                } else if ((i == StandardBoard.size[0] - 1) && (j == StandardBoard.size[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
+                } else if ((i == StandardBoard.getSize()[0] - 1) && (j == StandardBoard.getSize()[1] - 1) && (field[i][j].getCell() != StandardCell.cellType.BOMB)) {
                     if (field[i - 1][j].getCell() == StandardCell.cellType.BOMB) {
                         number++;
                     }
