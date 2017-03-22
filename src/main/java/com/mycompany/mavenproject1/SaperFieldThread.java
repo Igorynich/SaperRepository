@@ -13,9 +13,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,6 +28,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -43,6 +49,12 @@ public class SaperFieldThread implements Runnable {
     JSlider diffSlider = null;
     JSpinner newFieldX = null;
     JSpinner newFieldY = null;
+    JLabel bombCounter = null;
+    JLabel timer = null;
+    JButton refresh = null;
+    StandardFrame jf = null;
+    JPanel base = null;
+    Timer tim = null;
 
     @Override
     public void run() {
@@ -69,17 +81,28 @@ public class SaperFieldThread implements Runnable {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StandardFrame jf = new StandardFrame();
-                jf.setVisible(true);
-                System.out.println("SIZES: " + StandardBoard.getSize()[0] + " " + StandardBoard.getSize()[1]);
-                FieldBuilder.getField();
-                jf.add(getContent());
-                jf.setTitle("SAPER");
+                if ((JButton) e.getSource() == startButton) {
+                    jf = new StandardFrame();
+                    jf.setVisible(true);
+                    System.out.println("SIZES: " + StandardBoard.getSize()[0] + " " + StandardBoard.getSize()[1]);
+                    FieldBuilder.getField();
+                    base = new JPanel(new BorderLayout());
+                    jf.add(base);
+                    JPanel topPanel = new JPanel(new BorderLayout());
+                    topPanel.setBorder(BorderFactory.createTitledBorder("INFO"));
+                    base.add(topPanel, BorderLayout.NORTH);
+                    topPanel.add(getBombCounter(), BorderLayout.WEST);
+                    topPanel.add(getRefreshButton(), BorderLayout.CENTER);
+                    topPanel.add(getTimer(), BorderLayout.EAST);
+                    base.add(getContent(), BorderLayout.SOUTH);
+                    jf.setTitle("SAPER");
 
-                jf.setResizable(false);
+                    jf.setResizable(false);
 
-                jf.pack();
-                sf.dispose();
+                    jf.pack();
+                    System.out.println(jf);
+                    sf.dispose();
+                }
 
             }
         });
@@ -120,52 +143,14 @@ public class SaperFieldThread implements Runnable {
     }
 
     private JPanel getContent() {
-
+        jPanel1 = null;
         jPanel1 = new JPanel();
         GridLayout gl = new GridLayout(StandardBoard.getSize()[0], StandardBoard.getSize()[1], 1, 1);
         jPanel1.setLayout(gl);
 
         for (StandardCell cell : FieldBuilder.shellList) {
             jPanel1.add(cell);
-
-            cell.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    super.mousePressed(e); //To change body of generated methods, choose Tools | Templates.
-                }
-
-                @Override
-                public void mouseDragged(MouseEvent e) {
-                    FieldBuilder.shellList.set(FieldBuilder.shellList.indexOf(cell), FieldBuilder.fieldList.get(FieldBuilder.shellList.indexOf(cell)));
-                    System.out.println("DRAGGED on shellList: " + FieldBuilder.shellList.indexOf(cell) + " ");
-                }
-
-                @Override
-                public void mouseClicked(MouseEvent e) {
-
-                    //FieldBuilder.printList(FieldBuilder.shellList);
-                    //FieldBuilder.printList(FieldBuilder.fieldList);
-                    int index = FieldBuilder.shellList.indexOf(cell);
-                    if (index != -1) {
-                        System.out.println("Clicked Cell N: " + index);
-                        System.out.println("CLICKED in shellList: " + index + " " + Thread.currentThread() + " " + cell.getMousePosition() + " " + cell.getLocationOnScreen());
-                        System.out.println("Field List Cell: " + index + "  " + FieldBuilder.fieldList.get(index));
-                        FieldBuilder.shellList.set(index, FieldBuilder.fieldList.get(index));
-
-                    } else {
-                        System.out.println("FUCCCCC");
-                    }
-
-                    jPanel1.removeAll();
-
-                    for (StandardCell cell : FieldBuilder.shellList) {
-                        jPanel1.add(cell);
-                    }
-                    jPanel1.revalidate();
-                    jPanel1.repaint();
-                }
-
-            });
+            cell.addMouseListener(new SaperMouseAdapter(jPanel1, cell));
         }
 
         return jPanel1;
@@ -218,5 +203,90 @@ public class SaperFieldThread implements Runnable {
             }
         });
         return newFieldY;
+    }
+
+    private JLabel getBombCounter() {
+
+        bombCounter = new JLabel(FieldBuilder.getBombCounter() + "/" + FieldBuilder.getBombCounter());
+        bombCounter.setBorder(BorderFactory.createTitledBorder("BOMBS LEFT:"));
+        bombCounter.setPreferredSize(new Dimension(110, 40));
+
+        return bombCounter;
+    }
+
+    private JLabel getTimer() {
+
+        //timer = null;
+        Calendar cal = null;
+        timer = new JLabel();
+        cal = Calendar.getInstance();
+        int mins = cal.get(Calendar.MINUTE);
+        int secs = cal.get(Calendar.SECOND);
+        tim = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Calendar cal1 = Calendar.getInstance();
+                int difMin = cal1.get(Calendar.MINUTE) - mins;
+                int difSec = cal1.get(Calendar.SECOND) - secs;
+                int res = difMin * 60 + difSec;
+
+                timer.setText(String.valueOf(res));
+                timer.revalidate();
+                timer.repaint();
+            }
+        });
+        tim.setRepeats(true);
+        tim.setCoalesce(true);
+        tim.start();
+
+        timer.setPreferredSize(new Dimension(70, 40));
+        timer.setBorder(BorderFactory.createTitledBorder("Timer"));
+        return timer;
+    }
+
+    private JButton getRefreshButton() {
+        refresh = new JButton("R");
+        refresh.setPreferredSize(new Dimension(50, 40));
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if ((JButton) e.getSource() == refresh) {
+                    //jf.removeAll();
+                    //jf.dispose();
+                    System.out.println("----------NEW GAME----------");
+                    //System.out.println(jf.getContentPane().toString());
+//                jf.getContentPane().removeAll();
+//                jf.getContentPane().revalidate();
+//                jf.getContentPane().repaint();
+
+//                jf.revalidate();
+//                jf.repaint();
+                    //StandardFrame jf1 = new StandardFrame();
+                    jf.setVisible(true);
+                    System.out.println("SIZES: " + StandardBoard.getSize()[0] + " " + StandardBoard.getSize()[1]);
+                    FieldBuilder.getField();
+                    base.removeAll();
+//                    JPanel base1 = new JPanel(new BorderLayout());
+//                    jf.add(base1);
+                    JPanel topPanel = new JPanel(new BorderLayout());
+                    topPanel.setBorder(BorderFactory.createTitledBorder("INFO"));
+                    base.add(topPanel, BorderLayout.NORTH);
+                    topPanel.add(getBombCounter(), BorderLayout.WEST);
+                    topPanel.add(getRefreshButton(), BorderLayout.CENTER);
+                    tim.stop();
+                    topPanel.add(getTimer(), BorderLayout.EAST);
+
+                    base.add(getContent(), BorderLayout.SOUTH);
+                    base.revalidate();
+                    base.repaint();
+                    jf.setTitle("SAPER");
+
+                    jf.setResizable(false);
+
+                    jf.pack();
+                }
+            }
+        });
+        return refresh;
     }
 }

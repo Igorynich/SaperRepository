@@ -38,7 +38,7 @@ public class StandardCell extends JComponent implements Cell {
      *
      */
     public static enum cellType {
-        HIDDEN, BOMB, QUESTION, NUMBER, SHELL, BOMB_EXPLODE
+        HIDDEN, BOMB, QUESTION, NUMBER, SHELL, BOMB_EXPLODE, HIDDEN_CHECKED
     };
     private cellType cell = cellType.HIDDEN;
 
@@ -60,6 +60,10 @@ public class StandardCell extends JComponent implements Cell {
         super.paintComponent(gr); //To change body of generated methods, choose Tools | Templates.
         switch (this.cell) {
             case HIDDEN: {
+                drawNoBomb(gr, x, y);
+            }
+            break;
+            case HIDDEN_CHECKED: {
                 drawNoBomb(gr, x, y);
             }
             break;
@@ -171,9 +175,10 @@ public class StandardCell extends JComponent implements Cell {
     @Override
     public void drawQuestion(Graphics gr, int x, int y) {
         Graphics2D g = (Graphics2D) gr;
-        g.setPaint(Color.BLUE);
-        g.draw3DRect(x, y, x + this.cellSize[0], y + this.cellSize[1], true);
-        g.drawString("?", (x + this.cellSize[0]) / 2, (y + this.cellSize[1]));
+        g.setPaint(Color.PINK);
+        g.draw3DRect(x, y, x + this.getCellSize()[0], y + this.getCellSize()[1], true);
+        g.setPaint(Color.DARK_GRAY);
+        g.drawString("?", (x + this.getCellSize()[0]) / 2, (y + this.getCellSize()[1]));
     }
 
     @Override
