@@ -21,6 +21,17 @@ public class FieldBuilder {
     static Random random = new Random(/*new Date().getTime()*/);
     static int bombCounter = 0;
     static int notaBombCounter = 0;
+    static int questionCounter = 0;
+
+    public static int getQuestionCounter() {
+        return questionCounter;
+    }
+
+    public static void setQuestionCounter(int questionCounter) {
+        FieldBuilder.questionCounter = questionCounter;
+    }
+    
+    
 
     public static int getBombCounter() {
         return bombCounter;
@@ -39,6 +50,7 @@ public class FieldBuilder {
         shell = new StandardCell[StandardBoard.getSize()[0]][StandardBoard.getSize()[1]];
         fieldList = new ArrayList<StandardCell>();
         shellList = new ArrayList<StandardCell>();
+        questionCounter = 0;
         createField();
         addNumbers();
         createShell();

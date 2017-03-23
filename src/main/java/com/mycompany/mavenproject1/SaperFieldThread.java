@@ -55,6 +55,8 @@ public class SaperFieldThread implements Runnable {
     StandardFrame jf = null;
     JPanel base = null;
     Timer tim = null;
+    Timer timBomb = null;
+    static int time=0;
 
     @Override
     public void run() {
@@ -64,6 +66,10 @@ public class SaperFieldThread implements Runnable {
         sf.add(getStartingPage());
         sf.pack();
         //sf.add(getAskNameDialog());
+    }
+
+    public static int getTime() {
+        return time;
     }
 
     private JPanel getStartingPage() {
@@ -150,7 +156,7 @@ public class SaperFieldThread implements Runnable {
 
         for (StandardCell cell : FieldBuilder.shellList) {
             jPanel1.add(cell);
-            cell.addMouseListener(new SaperMouseAdapter(jPanel1, cell));
+            cell.addMouseListener(new SaperMouseAdapter(jPanel1, cell, tim));
         }
 
         return jPanel1;
@@ -207,10 +213,20 @@ public class SaperFieldThread implements Runnable {
 
     private JLabel getBombCounter() {
 
-        bombCounter = new JLabel(FieldBuilder.getBombCounter() + "/" + FieldBuilder.getBombCounter());
+        bombCounter = new JLabel((FieldBuilder.getBombCounter()-FieldBuilder.getQuestionCounter())+ "/" + FieldBuilder.getBombCounter());
         bombCounter.setBorder(BorderFactory.createTitledBorder("BOMBS LEFT:"));
         bombCounter.setPreferredSize(new Dimension(110, 40));
-
+        timBomb = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bombCounter.setText((FieldBuilder.getBombCounter()-FieldBuilder.getQuestionCounter())+ "/" + FieldBuilder.getBombCounter());
+                timer.revalidate();
+                timer.repaint();
+            }
+        });
+        timBomb.setRepeats(true);
+        timBomb.setCoalesce(true);
+        timBomb.start();
         return bombCounter;
     }
 
@@ -220,16 +236,19 @@ public class SaperFieldThread implements Runnable {
         Calendar cal = null;
         timer = new JLabel();
         cal = Calendar.getInstance();
-        int mins = cal.get(Calendar.MINUTE);
-        int secs = cal.get(Calendar.SECOND);
+        long start = cal.getTimeInMillis();
+//        int mins = cal.get(Calendar.MINUTE);
+//        int secs = cal.get(Calendar.SECOND);
         tim = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Calendar cal1 = Calendar.getInstance();
-                int difMin = cal1.get(Calendar.MINUTE) - mins;
-                int difSec = cal1.get(Calendar.SECOND) - secs;
-                int res = difMin * 60 + difSec;
-
+                long end = cal1.getTimeInMillis();
+//                int difMin = cal1.get(Calendar.MINUTE) - mins;
+//                int difSec = cal1.get(Calendar.SECOND) - secs;
+//                int res = difMin * 60 + difSec;
+                long res = (end - start)/1000;
+                time = (int) res;
                 timer.setText(String.valueOf(res));
                 timer.revalidate();
                 timer.repaint();
@@ -251,26 +270,19 @@ public class SaperFieldThread implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if ((JButton) e.getSource() == refresh) {
-                    //jf.removeAll();
-                    //jf.dispose();
+                    
                     System.out.println("----------NEW GAME----------");
-                    //System.out.println(jf.getContentPane().toString());
-//                jf.getContentPane().removeAll();
-//                jf.getContentPane().revalidate();
-//                jf.getContentPane().repaint();
-
-//                jf.revalidate();
-//                jf.repaint();
+                   
                     //StandardFrame jf1 = new StandardFrame();
                     jf.setVisible(true);
                     System.out.println("SIZES: " + StandardBoard.getSize()[0] + " " + StandardBoard.getSize()[1]);
                     FieldBuilder.getField();
                     base.removeAll();
-//                    JPanel base1 = new JPanel(new BorderLayout());
-//                    jf.add(base1);
+
                     JPanel topPanel = new JPanel(new BorderLayout());
                     topPanel.setBorder(BorderFactory.createTitledBorder("INFO"));
                     base.add(topPanel, BorderLayout.NORTH);
+                    timBomb.stop();
                     topPanel.add(getBombCounter(), BorderLayout.WEST);
                     topPanel.add(getRefreshButton(), BorderLayout.CENTER);
                     tim.stop();

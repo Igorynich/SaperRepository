@@ -186,6 +186,9 @@ public class StandardCell extends JComponent implements Cell {
         Graphics2D g = (Graphics2D) gr;
         g.setPaint(Color.BLUE);
         g.draw3DRect(x, y, x + this.cellSize[0], y + this.cellSize[1], true);
+        g.setPaint(Color.RED);
+        g.fillRect(x, y, x + this.cellSize[0], y + this.cellSize[1]);
+        g.setPaint(Color.BLACK);
         g.drawString("X", (x + this.cellSize[0]) / 2, (y + this.cellSize[1]));
     }
 
