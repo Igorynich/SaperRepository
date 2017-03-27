@@ -7,7 +7,6 @@ package com.mycompany.mavenproject1;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -61,8 +60,12 @@ public class SaperMouseAdapter extends MouseAdapter {
             }
 
             jPanel1.removeAll();
-            for (StandardCell cell : FieldBuilder.shellList) {
+            int counter = 0;
+            for (StandardCell cell : FieldBuilder.shellList) {  //redraw
                 //jPanel1.add(cell);
+                if ((cell.getCell() == StandardCell.cellType.HIDDEN_CHECKED) || (cell.getCell() == StandardCell.cellType.HIDDEN) || (cell.getCell() == StandardCell.cellType.NUMBER)) {
+                    counter++;
+                }
                 if (cell.getCell() == StandardCell.cellType.BOMB_EXPLODE) {
                     jPanel1.removeAll();
                     if (tim != null) {
@@ -74,11 +77,19 @@ public class SaperMouseAdapter extends MouseAdapter {
                     //jf.dispose();
                     StandardFrame gameOver = new StandardFrame();  //GAME OVER FRAME
                     gameOver.setVisible(false);
-                    new ResultScreen(gameOver, "Game Over Dialog", true);
+                    new ResultScreen(gameOver, "Game Over Dialog", false);
                     //gameOver.pack();
                     return;
                 } else {
                     jPanel1.add(cell);
+                    if (counter == FieldBuilder.getNotaBombCounter()) {
+                        if (tim != null) {
+                            tim.stop();
+                        }
+                        StandardFrame gameOver = new StandardFrame();  //WINNER'S FRAME
+                        gameOver.setVisible(false);
+                        new ResultScreen(gameOver, "You won!", true);
+                    }
                 }
                 //cell.addMouseListener(new SaperMouseAdapter(jPanel1, cell));
             }

@@ -7,6 +7,7 @@ package com.mycompany.mavenproject1;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -54,7 +55,6 @@ public class StandardCell extends JComponent implements Cell {
 //        return false;
 //
 //    }
-
     @Override
     protected void paintComponent(Graphics gr) {
         super.paintComponent(gr); //To change body of generated methods, choose Tools | Templates.
@@ -94,19 +94,18 @@ public class StandardCell extends JComponent implements Cell {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(cellSize[0]+1, cellSize[1]+1); //To change body of generated methods, choose Tools | Templates.
+        return new Dimension(cellSize[0] + 1, cellSize[1] + 1); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String toString() {
 
-        return ("Cell N=" + i++ + " " + Integer.toString(x) + " " + Integer.toString(y)+ " "+ getCell()+ " "+ getCellCount()); //To change body of generated methods, choose Tools | Templates.
+        return ("Cell N=" + i++ + " " + Integer.toString(x) + " " + Integer.toString(y) + " " + getCell() + " " + getCellCount()); //To change body of generated methods, choose Tools | Templates.
     }
 
 //    public StandardCell() {
 //        cellCount++;
 //    }
-
     /**
      *
      * @param x X coordinate (left top coreber)
@@ -125,7 +124,7 @@ public class StandardCell extends JComponent implements Cell {
         //this.setEnabled(true);
         //this.setVisible(true);
         //setBorder(BorderFactory.createTitledBorder("Node"));
-        
+
     }
 
     public static int getCellCount() {
@@ -160,7 +159,8 @@ public class StandardCell extends JComponent implements Cell {
         g.setPaint(Color.RED);
         //g.fill3DRect(x, y, x + this.cellSize[0], y + this.cellSize[1], false);
         g.draw3DRect(x, y, x + this.cellSize[0], y + this.cellSize[1], false);
-        g.drawString("*", (x + this.cellSize[0]) / 2, (y + this.cellSize[1]));
+        g.setFont(new Font("Courier New", Font.TYPE1_FONT, 20));
+        g.drawString("*", (x + this.cellSize[0]) / 4, (y + this.cellSize[1]));
     }
 
     @Override
@@ -168,8 +168,30 @@ public class StandardCell extends JComponent implements Cell {
         Graphics2D g = (Graphics2D) gr;
         g.setPaint(Color.BLUE);
         g.draw3DRect(x, y, x + this.cellSize[0], y + this.cellSize[1], false);
+        switch (number) {
+            case 1:
+                g.setPaint(Color.BLUE);
+                break;
+            case 2:
+                g.setPaint(Color.ORANGE);
+                break;
+            case 3:
+                g.setPaint(Color.CYAN);
+                break;
+            case 4:
+                g.setPaint(Color.magenta);
+                break;
+            case 5:
+                g.setPaint(Color.GREEN);
+                break;
+            default:
+                g.setPaint(Color.BLACK);
+                break;
+        }
+        //g.setPaint(Color.BLUE);
         String str = Integer.toString(number);
-        g.drawString(str, (x + this.cellSize[0]) / 2, (y + this.cellSize[1]));
+        g.setFont(new Font("Courier New", Font.TYPE1_FONT, 20));
+        g.drawString(str, (x + this.cellSize[0]) / 4, (y + this.cellSize[1]));
     }
 
     @Override
@@ -178,7 +200,8 @@ public class StandardCell extends JComponent implements Cell {
         g.setPaint(Color.PINK);
         g.draw3DRect(x, y, x + this.getCellSize()[0], y + this.getCellSize()[1], true);
         g.setPaint(Color.DARK_GRAY);
-        g.drawString("?", (x + this.getCellSize()[0]) / 2, (y + this.getCellSize()[1]));
+        g.setFont(new Font("Courier New", Font.TYPE1_FONT, 20));
+        g.drawString("?", (x + this.getCellSize()[0]) / 4, (y + this.getCellSize()[1]));
     }
 
     @Override
@@ -189,7 +212,8 @@ public class StandardCell extends JComponent implements Cell {
         g.setPaint(Color.RED);
         g.fillRect(x, y, x + this.cellSize[0], y + this.cellSize[1]);
         g.setPaint(Color.BLACK);
-        g.drawString("X", (x + this.cellSize[0]) / 2, (y + this.cellSize[1]));
+        g.setFont(new Font("Courier New", Font.TYPE1_FONT, 20));
+        g.drawString("X", (x + this.cellSize[0]) / 4, (y + this.cellSize[1]));
     }
 
     @Override

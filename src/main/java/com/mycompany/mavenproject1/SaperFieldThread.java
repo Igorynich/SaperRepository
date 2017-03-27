@@ -11,6 +11,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
@@ -21,6 +22,8 @@ import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -32,6 +35,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MenuListener;
 
 /**
  *
@@ -56,7 +60,8 @@ public class SaperFieldThread implements Runnable {
     JPanel base = null;
     Timer tim = null;
     Timer timBomb = null;
-    static int time=0;
+    static int time = 0;
+    JMenuBar stMenu = null;
 
     @Override
     public void run() {
@@ -64,6 +69,7 @@ public class SaperFieldThread implements Runnable {
         sf.setVisible(true);
         sf.setTitle("Set your game");
         sf.add(getStartingPage());
+        sf.setJMenuBar(getStartingMenu());
         sf.pack();
         //sf.add(getAskNameDialog());
     }
@@ -104,7 +110,7 @@ public class SaperFieldThread implements Runnable {
                     jf.setTitle("SAPER");
 
                     jf.setResizable(false);
-
+                    jf.setJMenuBar(getFieldMenu());
                     jf.pack();
                     System.out.println(jf);
                     sf.dispose();
@@ -115,6 +121,63 @@ public class SaperFieldThread implements Runnable {
 
         //layPane.add(getDiffSlider(), 1);
         return startingPanel;
+    }
+
+    private JMenuBar getStartingMenu() {
+        stMenu = null;
+        stMenu = new JMenuBar();
+        JMenu resMenu = new JMenu("Results");
+        stMenu.add(resMenu);
+        resMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                StandardFrame results = new StandardFrame();  //GAME OVER FRAME
+                results.setVisible(false);
+                new ResultScreen(results, "Game Over Dialog", false);
+            }
+        });
+        resMenu.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e); //To change body of generated methods, choose Tools | Templates.
+                StandardFrame results = new StandardFrame();  //GAME OVER FRAME
+                results.setVisible(false);
+                new ResultScreen(results, "Game Over Dialog", false);
+            }
+
+        });
+
+        return stMenu;
+    }
+
+    private JMenuBar getFieldMenu() {
+        JMenuBar fMenu = null;
+        fMenu = new JMenuBar();
+        JMenu resMenu = new JMenu("Results");
+        fMenu.add(resMenu);
+        resMenu.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e); //To change body of generated methods, choose Tools | Templates.
+                StandardFrame results = new StandardFrame();  //GAME OVER FRAME
+                results.setVisible(false);
+                new ResultScreen(results, "Game Over Dialog", false);
+            }
+        });
+        JMenu backToStart = new JMenu ("Back to Start");
+        fMenu.add(backToStart);
+        //backToStart.setMnemonic(KeyEvent.VK_BACK_SPACE);
+        backToStart.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e); //To change body of generated methods, choose Tools | Templates.
+                jf.dispose();
+                java.awt.EventQueue.invokeLater(new SaperFieldThread());
+            }
+            
+});
+        
+        return fMenu;
     }
 
     private JOptionPane getAskNameDialog() {
@@ -213,13 +276,13 @@ public class SaperFieldThread implements Runnable {
 
     private JLabel getBombCounter() {
 
-        bombCounter = new JLabel((FieldBuilder.getBombCounter()-FieldBuilder.getQuestionCounter())+ "/" + FieldBuilder.getBombCounter());
+        bombCounter = new JLabel((FieldBuilder.getBombCounter() - FieldBuilder.getQuestionCounter()) + "/" + FieldBuilder.getBombCounter());
         bombCounter.setBorder(BorderFactory.createTitledBorder("BOMBS LEFT:"));
         bombCounter.setPreferredSize(new Dimension(110, 40));
         timBomb = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                bombCounter.setText((FieldBuilder.getBombCounter()-FieldBuilder.getQuestionCounter())+ "/" + FieldBuilder.getBombCounter());
+                bombCounter.setText((FieldBuilder.getBombCounter() - FieldBuilder.getQuestionCounter()) + "/" + FieldBuilder.getBombCounter());
                 timer.revalidate();
                 timer.repaint();
             }
@@ -247,7 +310,7 @@ public class SaperFieldThread implements Runnable {
 //                int difMin = cal1.get(Calendar.MINUTE) - mins;
 //                int difSec = cal1.get(Calendar.SECOND) - secs;
 //                int res = difMin * 60 + difSec;
-                long res = (end - start)/1000;
+                long res = (end - start) / 1000;
                 time = (int) res;
                 timer.setText(String.valueOf(res));
                 timer.revalidate();
@@ -270,9 +333,9 @@ public class SaperFieldThread implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if ((JButton) e.getSource() == refresh) {
-                    
+
                     System.out.println("----------NEW GAME----------");
-                   
+
                     //StandardFrame jf1 = new StandardFrame();
                     jf.setVisible(true);
                     System.out.println("SIZES: " + StandardBoard.getSize()[0] + " " + StandardBoard.getSize()[1]);
