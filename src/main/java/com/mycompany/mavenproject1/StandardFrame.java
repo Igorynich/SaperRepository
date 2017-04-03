@@ -15,6 +15,7 @@ import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -34,6 +35,9 @@ public class StandardFrame extends JFrame {
     JPanel base = null;
     JLayeredPane layPane = null;
     OverlayLayout overlayLayout = null;
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    double width = screenSize.getWidth();
+    double height = screenSize.getHeight();
 
     public StandardFrame() throws HeadlessException {
         initComponents();
@@ -43,7 +47,7 @@ public class StandardFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setBounds(0, 0, 300, 300);                                             //use Board getSize()
         //this.setTitle("SAPER");
-        
+
         //overlayLayout.addLayoutComponent("Starting Panle", getStartingPage());
         //this.add(getStartingPage());
         //this.setLayout(new BorderLayout());
@@ -65,10 +69,8 @@ public class StandardFrame extends JFrame {
         //base = new JPanel(new Lay);
         //this.add(overlayLayout);
         //this.add(getStartingPage());
-        
-        this.setLocation(1100, 200);
+        this.setLocation((int)width/2, (int)height/4);
 
-        
     }
 
 //    private JPanel getContent() {

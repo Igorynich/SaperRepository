@@ -92,7 +92,7 @@ public class ResultScreen extends JDialog {
         ResultSet.readFromFile();
 
         for (ResultSet rs : ResultSet.getAllSets()) {
-            if ((i < 10) && (i < ResultSet.getAllSets().size())) {
+            if ((i < 10) && (i <= ResultSet.getAllSets().size())) {
                 left.add(getLabel(String.valueOf(i)));
                 left.add(getLabel(rs.getName()));
                 left.add(getLabel(rs.getBombs()));

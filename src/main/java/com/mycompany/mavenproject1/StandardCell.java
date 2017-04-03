@@ -22,9 +22,9 @@ import javax.swing.event.AncestorListener;
  *
  * @author User
  */
-public class StandardCell extends JComponent implements Cell {
+public class StandardCell extends JComponent{
 
-    static int[] cellSize = {20, 20};
+    private static int[] cellSize = {20, 20};
     private static int cellCount = 0;
     private int x = 0;
     private int y = 0;
@@ -131,18 +131,17 @@ public class StandardCell extends JComponent implements Cell {
         return cellCount;
     }
 
-    @Override
-    public void setCellSize(int x, int y) {
-        this.cellSize[0] = x;
-        this.cellSize[1] = y;
+    public static void setCellSize(int x, int y) {
+        cellSize[0] = x;
+        cellSize[1] = y;
     }
 
-    @Override
+    
     public int[] getCellSize() {
         return cellSize;
     }
 
-    @Override
+    
     public void drawNoBomb(Graphics gr, int x, int y) {
         Graphics2D g = (Graphics2D) gr;
         g.setPaint(Color.BLUE);
@@ -153,17 +152,17 @@ public class StandardCell extends JComponent implements Cell {
 
     }
 
-    @Override
+    
     public void drawBomb(Graphics gr, int x, int y) {
         Graphics2D g = (Graphics2D) gr;
         g.setPaint(Color.RED);
         //g.fill3DRect(x, y, x + this.cellSize[0], y + this.cellSize[1], false);
         g.draw3DRect(x, y, x + this.cellSize[0], y + this.cellSize[1], false);
-        g.setFont(new Font("Courier New", Font.TYPE1_FONT, 20));
+        g.setFont(new Font("Courier New", Font.TYPE1_FONT, cellSize[0]));
         g.drawString("*", (x + this.cellSize[0]) / 4, (y + this.cellSize[1]));
     }
 
-    @Override
+    
     public void drawNumber(Graphics gr, int x, int y, int number) {
         Graphics2D g = (Graphics2D) gr;
         g.setPaint(Color.BLUE);
@@ -190,21 +189,21 @@ public class StandardCell extends JComponent implements Cell {
         }
         //g.setPaint(Color.BLUE);
         String str = Integer.toString(number);
-        g.setFont(new Font("Courier New", Font.TYPE1_FONT, 20));
+        g.setFont(new Font("Courier New", Font.TYPE1_FONT, cellSize[0]));
         g.drawString(str, (x + this.cellSize[0]) / 4, (y + this.cellSize[1]));
     }
 
-    @Override
+    
     public void drawQuestion(Graphics gr, int x, int y) {
         Graphics2D g = (Graphics2D) gr;
         g.setPaint(Color.PINK);
         g.draw3DRect(x, y, x + this.getCellSize()[0], y + this.getCellSize()[1], true);
         g.setPaint(Color.DARK_GRAY);
-        g.setFont(new Font("Courier New", Font.TYPE1_FONT, 20));
+        g.setFont(new Font("Courier New", Font.TYPE1_FONT, cellSize[0]));
         g.drawString("?", (x + this.getCellSize()[0]) / 4, (y + this.getCellSize()[1]));
     }
 
-    @Override
+   
     public void drawBombExplode(Graphics gr, int x, int y) {
         Graphics2D g = (Graphics2D) gr;
         g.setPaint(Color.BLUE);
@@ -212,11 +211,11 @@ public class StandardCell extends JComponent implements Cell {
         g.setPaint(Color.RED);
         g.fillRect(x, y, x + this.cellSize[0], y + this.cellSize[1]);
         g.setPaint(Color.BLACK);
-        g.setFont(new Font("Courier New", Font.TYPE1_FONT, 20));
+        g.setFont(new Font("Courier New", Font.TYPE1_FONT, cellSize[0]));
         g.drawString("X", (x + this.cellSize[0]) / 4, (y + this.cellSize[1]));
     }
 
-    @Override
+    
     public void drawShell(Graphics gr, int x, int y) {
         Graphics2D g = (Graphics2D) gr;
         g.setPaint(Color.PINK);

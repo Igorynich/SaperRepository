@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -62,6 +63,8 @@ public class SaperFieldThread implements Runnable {
     Timer timBomb = null;
     static int time = 0;
     JMenuBar stMenu = null;
+    JComboBox squares = null;
+    final String[] squareSizes = {"Standard", "Big", "Very Big"};
 
     @Override
     public void run() {
@@ -81,15 +84,18 @@ public class SaperFieldThread implements Runnable {
     private JPanel getStartingPage() {
         startingPanel = new JPanel();
         startButton = new JButton("Start the game!");
-        startingPanel.setLayout(new BorderLayout());
-        startingPanel.add(getDiffSlider(), BorderLayout.NORTH);
-        startingPanel.add(startButton, BorderLayout.SOUTH);
+        startingPanel.setLayout(new GridLayout(0, 1));
+        
+        startingPanel.add(getDiffSlider());
+        
+        startingPanel.add(getSquareSize());
         JPanel fieldSize = new JPanel(new FlowLayout());
-        startingPanel.add(fieldSize, BorderLayout.CENTER);
+        startingPanel.add(fieldSize);
         fieldSize.setBorder(BorderFactory.createTitledBorder(
                 "Field Size"));
         fieldSize.add(getFieldSizeSpinnerX());
         fieldSize.add(getFieldSizeSpinnerY());
+        startingPanel.add(startButton);
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -164,7 +170,7 @@ public class SaperFieldThread implements Runnable {
                 new ResultScreen(results, "Game Over Dialog", false);
             }
         });
-        JMenu backToStart = new JMenu ("Back to Start");
+        JMenu backToStart = new JMenu("Back to Start");
         fMenu.add(backToStart);
         //backToStart.setMnemonic(KeyEvent.VK_BACK_SPACE);
         backToStart.addMouseListener(new MouseAdapter() {
@@ -174,10 +180,32 @@ public class SaperFieldThread implements Runnable {
                 jf.dispose();
                 java.awt.EventQueue.invokeLater(new SaperFieldThread());
             }
-            
-});
-        
+
+        });
+
         return fMenu;
+    }
+
+    private JComboBox getSquareSize() {
+        squares = null;
+        squares = new JComboBox(squareSizes);
+        squares.setSelectedIndex(0);
+        squares.setBorder(BorderFactory.createTitledBorder(
+                "Square Size:"));
+        squares.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String sel = (String) squares.getSelectedItem();
+                if (sel.equals(squareSizes[0])) {
+                    StandardCell.setCellSize(20, 20);
+                } else if (sel.equals(squareSizes[1])){
+                    StandardCell.setCellSize(30, 30);
+                }else if (sel.equals(squareSizes[2])){
+                    StandardCell.setCellSize(40, 40);
+                }
+            }
+        });
+        return squares;
     }
 
     private JOptionPane getAskNameDialog() {
